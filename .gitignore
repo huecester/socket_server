@@ -1,7 +1,8 @@
 build/*
 
-# Created by https://www.toptal.com/developers/gitignore/api/go,vim
-# Edit at https://www.toptal.com/developers/gitignore?templates=go,vim
+
+# Created by https://www.toptal.com/developers/gitignore/api/go,vim,tags
+# Edit at https://www.toptal.com/developers/gitignore?templates=go,vim,tags
 
 ### Go ###
 # Binaries for programs and plugins
@@ -24,6 +25,25 @@ build/*
 /vendor/
 /Godeps/
 
+### Tags ###
+# Ignore tags created by etags, ctags, gtags (GNU global) and cscope
+TAGS
+.TAGS
+!TAGS/
+tags
+.tags
+!tags/
+gtags.files
+GTAGS
+GRTAGS
+GPATH
+GSYMS
+cscope.files
+cscope.out
+cscope.in.out
+cscope.po.out
+
+
 ### Vim ###
 # Swap
 [._]*.s[a-v][a-z]
@@ -41,8 +61,7 @@ Sessionx.vim
 .netrwhist
 *~
 # Auto-generated tag files
-tags
 # Persistent undo
 [._]*.un~
 
-# End of https://www.toptal.com/developers/gitignore/api/go,vim
+# End of https://www.toptal.com/developers/gitignore/api/go,vim,tags
