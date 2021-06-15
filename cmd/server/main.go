@@ -7,14 +7,11 @@ import (
 	//ws "github.com/huecester/socket_server/pkg/server/websocket"
 )
 
-
 const (
 	tcpPort = 42069
 )
 
-
-type handlerImpl struct {}
-
+type handlerImpl struct{}
 
 func (h handlerImpl) OnConnect(cl *tcp.Client) {
 	cl.Send("Hello, client!")
