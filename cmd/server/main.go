@@ -2,25 +2,35 @@ package main
 
 import (
 	"fmt"
-	"net"
 
-	tcp "github.com/huecester/socket_server/pkg/server/tcp"
+	"github.com/huecester/socket_server/pkg/server/tcp"
 	//ws "github.com/huecester/socket_server/pkg/server/websocket"
 )
 
-func handleConnection(conn net.Conn) {
-	defer conn.Close()
 
-	fmt.Fprintf(conn, "Talking to client.")
+const (
+	tcpPort = 42069
+)
+
+
+type handlerImpl struct {}
+
+
+func (h handlerImpl) OnConnect(cl *tcp.Client) {
+	cl.Send("Hello, client!")
+}
+
+func (h handlerImpl) OnMessage(cl *tcp.Client, msg string) {
+	fmt.Println("Received:", msg)
 }
 
 func main() {
-	inbound := make(chan net.Conn)
-	go tcp.Server(42069, inbound)
+	var handler handlerImpl
+	server := tcp.New(handler)
 
-	fmt.Println("Server started.")
-
-	for {
-		go handleConnection(<-inbound)
+	err := server.Start(tcpPort)
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 }
