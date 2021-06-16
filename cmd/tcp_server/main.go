@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/huecester/socket_server/pkg/server/tcp"
-	//ws "github.com/huecester/socket_server/pkg/server/websocket"
+	"github.com/huecester/socket_server/pkg/tcp"
+	//ws "github.com/huecester/socket_server/pkg/websocket"
 )
 
 const (
