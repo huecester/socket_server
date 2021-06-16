@@ -1,16 +1,16 @@
 package websocket
 
 import (
+	"errors"
 	"fmt"
 	"io"
-	"errors"
 	"net"
 	"net/http"
 
-	"strings"
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/binary"
+	"strings"
 )
 
 // Helper functions
@@ -39,14 +39,14 @@ func getIP(r *http.Request) string {
 type frame struct {
 	raw []byte
 
-	fin bool
-	rsv []bool
+	fin    bool
+	rsv    []bool
 	opcode byte
-	mask bool
+	mask   bool
 
 	payloadLen uint64
-	maskKey []byte
-	payload []byte
+	maskKey    []byte
+	payload    []byte
 
 	decoded string
 }
@@ -59,12 +59,12 @@ func newFrame(data []byte) (frame, error) {
 
 	// Header
 	// fin
-	fin := data[0] & (1 << 7) > 0
+	fin := data[0]&(1<<7) > 0
 
 	// rsv bits
 	rsv := make([]bool, 3)
 	for i := 0; i < 3; i++ {
-		rsv[i] = data[0] & byte(1 << (6-i)) > 0
+		rsv[i] = data[0]&byte(1<<(6-i)) > 0
 	}
 
 	// opcode
@@ -73,8 +73,7 @@ func newFrame(data []byte) (frame, error) {
 	data = data[1:]
 
 	// mask
-	mask := data[0] & (1 << 7) > 0
-
+	mask := data[0]&(1<<7) > 0
 
 	// Data
 	// Payload length
@@ -99,7 +98,6 @@ func newFrame(data []byte) (frame, error) {
 		payloadLen = binary.BigEndian.Uint64(payloadByteSlice)
 	}
 
-
 	// Mask key
 	maskKey := make([]byte, 4)
 	if mask {
@@ -107,32 +105,31 @@ func newFrame(data []byte) (frame, error) {
 		data = data[4:]
 	}
 
-
 	// Additional
 	// Decoded payload
 	decodedBytes := make([]byte, 0, payloadLen)
 	var i uint64
 	for i = 0; i < payloadLen; i++ {
-		decodedBytes = append(decodedBytes, data[i] ^ maskKey[i%4])
+		decodedBytes = append(decodedBytes, data[i]^maskKey[i%4])
 	}
 	decoded := string(decodedBytes)
 
 	return frame{
-		raw: raw,
-		fin: fin,
-		rsv: rsv,
-		opcode: opcode,
-		mask: mask,
+		raw:        raw,
+		fin:        fin,
+		rsv:        rsv,
+		opcode:     opcode,
+		mask:       mask,
 		payloadLen: payloadLen,
-		maskKey: maskKey,
-		payload: data,
-		decoded: decoded,
+		maskKey:    maskKey,
+		payload:    data,
+		decoded:    decoded,
 	}, nil
 }
 
 func createMessageFrame(message string) []byte {
 	res := []byte{
-		0b10000001, // fin true | rsv{0, 0, 0} | opcode 0x01
+		0b10000001,         // fin true | rsv{0, 0, 0} | opcode 0x01
 		byte(len(message)), // mask false | payload length
 	}
 
@@ -143,15 +140,14 @@ func createMessageFrame(message string) []byte {
 	return res
 }
 
-
 ////////////
 // Client //
 ////////////
 
 type Client struct {
 	server *server
-	conn *net.Conn
-	IP string
+	conn   *net.Conn
+	IP     string
 
 	continueHead frame
 	continueBody []frame
@@ -171,14 +167,13 @@ func (s *server) newClient(w http.ResponseWriter, r *http.Request) (Client, erro
 		return Client{}, err
 	}
 
-
 	res := []string{
 		"HTTP/1.1 101 Switching Protocols",
 		"Upgrade: websocket",
 		"Connection: upgrade",
 	}
 
-	res = append(res, "Sec-WebSocket-Accept: " + getAcceptHash(r.Header.Get("Sec-WebSocket-Key")))
+	res = append(res, "Sec-WebSocket-Accept: "+getAcceptHash(r.Header.Get("Sec-WebSocket-Key")))
 	//res = append(res, "Sec-WebSocket-Protocol: " + "bag")
 
 	res = append(res, "", "")
@@ -187,8 +182,8 @@ func (s *server) newClient(w http.ResponseWriter, r *http.Request) (Client, erro
 
 	return Client{
 		server: s,
-		conn: &conn,
-		IP: getIP(r),
+		conn:   &conn,
+		IP:     getIP(r),
 	}, nil
 }
 
@@ -284,10 +279,9 @@ func (cl *Client) handleFrame() {
 			pong[0] = (pong[0] & 0b11110000) | 0b1010 // Clear opcode then set to 0xa (pong)
 			cl.sendBytes(pong)
 
-		//case 0xa: // TODO send pings
+			//case 0xa: // TODO send pings
 			// Pong
 
 		}
 	}
 }
-

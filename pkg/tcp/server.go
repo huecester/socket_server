@@ -14,7 +14,6 @@ type handler interface {
 	OnMessage(*Client, string)
 }
 
-
 ////////////
 // Client //
 ////////////
@@ -22,7 +21,7 @@ type handler interface {
 type Client struct {
 	server *server
 	conn   *net.Conn
-	id string
+	id     string
 }
 
 // Constructor
@@ -30,7 +29,7 @@ func newClient(serverPtr *server, connPtr *net.Conn, id string) Client {
 	client := Client{
 		server: serverPtr,
 		conn:   connPtr,
-		id: id,
+		id:     id,
 	}
 
 	return client
@@ -71,7 +70,6 @@ func (cl *Client) Close() {
 	delete(cl.server.clients, cl.id)
 }
 
-
 ////////////
 // Server //
 ////////////
@@ -98,9 +96,7 @@ func (s *server) Start(port int) error {
 	defer ln.Close()
 
 	for {
-		select {
-
-		}
+		select {}
 		conn, err := ln.Accept()
 		if err != nil {
 			continue

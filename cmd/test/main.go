@@ -5,7 +5,7 @@ import (
 	ws "github.com/huecester/socket_server/pkg/websocket"
 )
 
-type handler struct {}
+type handler struct{}
 
 func (h handler) OnConnect(cl *ws.Client) {
 	fmt.Println("Connection from", cl.IP)
