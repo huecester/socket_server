@@ -38,7 +38,7 @@ func newClient(serverPtr *server, connPtr *net.Conn, id string) Client {
 // Methods
 func (cl *Client) receive() {
 	buf := make([]byte, 1024)
-	conn := cl.conn
+	conn := *cl.conn
 
 	for {
 		n, err := conn.Read(buf)
@@ -55,7 +55,7 @@ func (cl *Client) receive() {
 
 		hb := make([]byte, n)
 		copy(hb, buf)
-		go cl.s.handler.OnMessage(cl, string(hb))
+		go cl.server.handler.OnMessage(cl, string(hb))
 	}
 }
 
@@ -102,7 +102,11 @@ func (s *server) Start(port int) error {
 			continue
 		}
 
-		id := idgen.New(8)
+		id, err := idgen.New(8)
+		if err != nil {
+			continue
+		}
+
 		cl := newClient(s, &conn, id)
 
 		s.clients[id] = &cl
