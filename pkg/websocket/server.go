@@ -9,6 +9,7 @@ import (
 type handler interface {
 	OnConnect(*Client)
 	OnMessage(*Client, string)
+	OnClose(*Client)
 }
 
 ////////////
