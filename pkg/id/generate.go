@@ -14,5 +14,5 @@ func New(length int) (string, error) {
 		return "", err
 	}
 
-	return hex.EncodeToString(b)[:length]
+	return hex.EncodeToString(b)[:length], nil
 }

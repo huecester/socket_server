@@ -17,6 +17,10 @@ func (h handler) OnMessage(cl *ws.Client, msg string) {
 	cl.Send(fmt.Sprintf("You said: %v\n", msg))
 }
 
+func (h handler) OnClose(cl *ws.Client) {
+	fmt.Println("Connection closed", cl.IP)
+}
+
 func main() {
 	handlerObject := handler{}
 	server := ws.New(handlerObject)

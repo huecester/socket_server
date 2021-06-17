@@ -204,6 +204,13 @@ func (cl *Client) Close() {
 		0b00000000,
 	})
 	cl.sentClose = true
+	go cl.server.handler.OnClose(cl)
+}
+
+func (cl *Client) Terminate() {
+	conn := *cl.conn
+	conn.Close()
+	go cl.server.handler.OnClose(cl)
 }
 
 func (cl *Client) receiveFrame() (frame, error) {
@@ -227,6 +234,11 @@ func (cl *Client) handleFrame() {
 	for {
 		data, err := cl.receiveFrame()
 		if err != nil {
+			if err == io.EOF {
+				cl.Terminate()
+				return
+			}
+
 			fmt.Println(err)
 			continue
 		}

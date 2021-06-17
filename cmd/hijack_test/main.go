@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -13,28 +12,28 @@ func main() {
 			return
 		}
 
-		conn, buff, err := hj.Hijack()
+		conn, _, err := hj.Hijack()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		defer conn.Close()
-		//buff.WriteString("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nsomebody once told me")
+		//buf.WriteString("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nsomebody once told me")
 		conn.Write([]byte("Raw TCP time. Hello, client!"))
 		return
 
-		/*buff.WriteString("Raw TCP time. Say hi: ")
-		buff.Flush()
+		/*buf.WriteString("Raw TCP time. Say hi: ")
+		buf.Flush()
 
-		s, err := buff.ReadString('\n')
+		s, err := buf.ReadString('\n')
 		if err != nil {
 			fmt.Printf("Error reading string: %v\n", err)
 			return
 		}
 
-		fmt.Fprintf(buff, "You said: %q\nBye.\n", s)
-		buff.Flush()*/
+		fmt.Fprintf(buf, "You said: %q\nBye.\n", s)
+		buf.Flush()*/
 	})
 
 	http.ListenAndServe(":8000", nil)
