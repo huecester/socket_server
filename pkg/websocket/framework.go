@@ -204,7 +204,6 @@ func (cl *Client) Close() {
 		0b00000000,
 	})
 	cl.sentClose = true
-	go cl.server.handler.OnClose(cl)
 }
 
 func (cl *Client) Terminate() {
@@ -283,6 +282,7 @@ func (cl *Client) handleFrame() {
 			}
 			conn := *cl.conn
 			conn.Close()
+			go cl.server.handler.OnClose(cl)
 
 		case 0x9:
 			// Ping
