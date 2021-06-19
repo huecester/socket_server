@@ -21,7 +21,7 @@ type handler interface {
 type Client struct {
 	server *server
 	conn   *net.Conn
-	id     string
+	ID     string
 }
 
 // Constructor
@@ -29,7 +29,7 @@ func newClient(serverPtr *server, connPtr *net.Conn, id string) Client {
 	client := Client{
 		server: serverPtr,
 		conn:   connPtr,
-		id:     id,
+		ID:     id,
 	}
 
 	return client
