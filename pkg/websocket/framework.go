@@ -291,7 +291,7 @@ func (cl *Client) handleFrame() {
 			pong[0] = (pong[0] & 0b11110000) | 0b1010 // Clear opcode then set to 0xa (pong)
 			cl.sendBytes(pong)
 
-			//case 0xa: // TODO send pings
+			//case 0xa: // TODO send pings / terminate connection
 			// Pong
 
 		}
