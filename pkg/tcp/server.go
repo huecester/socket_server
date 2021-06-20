@@ -67,7 +67,7 @@ func (cl *Client) Send(message string) {
 func (cl *Client) Close() {
 	conn := *cl.conn
 	conn.Close()
-	delete(cl.server.clients, cl.id)
+	delete(cl.server.clients, cl.ID)
 }
 
 ////////////
