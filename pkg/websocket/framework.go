@@ -239,7 +239,7 @@ func (cl *Client) handleFrame() {
 			}
 
 			fmt.Println(err)
-			continue
+			cl.Terminate()
 		}
 
 		switch data.opcode {
