@@ -30,11 +30,11 @@ func New(handler handler) server {
 }
 
 // Methods
-func (s *server) Start(port int) {
+func (s *server) Start(port int) error {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		cl, err := s.newClient(w, r)
 		if err != nil {
-			fmt.Println(err)
+			return err
 		}
 
 		s.clients[cl.IP] = &cl
@@ -43,7 +43,6 @@ func (s *server) Start(port int) {
 	})
 
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 }
