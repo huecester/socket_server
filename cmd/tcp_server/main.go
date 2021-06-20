@@ -14,6 +14,7 @@ const (
 type handlerImpl struct{}
 
 func (h handlerImpl) OnConnect(cl *tcp.Client) {
+	fmt.Println("Conneciton opened.")
 	cl.Send("Hello, client!")
 }
 
@@ -21,9 +22,14 @@ func (h handlerImpl) OnMessage(cl *tcp.Client, msg string) {
 	fmt.Println("Received:", msg)
 }
 
+func (h handlerImpl) OnClose(cl *tcp.Client) {
+	fmt.Println("Connection closed.")
+}
+
+
 func main() {
-	var handler handlerImpl
-	server := tcp.New(handler)
+	var h handlerImpl
+	server := tcp.New(h)
 
 	err := server.Start(tcpPort)
 	if err != nil {

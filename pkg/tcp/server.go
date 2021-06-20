@@ -83,6 +83,7 @@ type server struct {
 func New(handler handler) server {
 	return server{
 		handler: handler,
+		clients: make(map[string]*Client),
 	}
 }
 
@@ -96,14 +97,15 @@ func (s *server) Start(port int) error {
 	defer ln.Close()
 
 	for {
-		select {}
 		conn, err := ln.Accept()
 		if err != nil {
+			fmt.Println(err)
 			continue
 		}
 
 		id, err := idgen.New(8)
 		if err != nil {
+			fmt.Println(err)
 			continue
 		}
 
