@@ -1,2 +1,2 @@
 # Go Socket Server
-Simple Go socket servers
+Simple Go socket servers + id generator
