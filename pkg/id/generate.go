@@ -6,13 +6,13 @@ import (
 	"time"
 )
 
-func New(length int) (string, error) {
+func New(length int) string {
 	gen := rand.New(rand.NewSource(time.Now().UnixNano()))
 	b := make([]byte, (length+1)/2)
 
 	if _, err := gen.Read(b); err != nil {
-		return "", err
+		panic("idgen failed")
 	}
 
-	return hex.EncodeToString(b)[:length], nil
+	return hex.EncodeToString(b)[:length]
 }

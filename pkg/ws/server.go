@@ -1,10 +1,10 @@
-package tcp
+package ws
 
 import (
 	"strings"
 )
 
-// handler interface
+// Handler
 type handler interface {
 	OnConnect(*Client)
 	OnMessage(*Client, string)
@@ -17,8 +17,6 @@ func parseMessage(raw string) (directive, content string) {
 	return final[0], final[1]
 }
 
-
-// Server
 type server struct {
 	listener Listener
 	handler handler

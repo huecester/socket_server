@@ -1,10 +1,10 @@
-package tcp
+package dual
 
 import (
 	"strings"
 )
 
-// handler interface
+// Handler
 type handler interface {
 	OnConnect(*Client)
 	OnMessage(*Client, string)
@@ -20,7 +20,8 @@ func parseMessage(raw string) (directive, content string) {
 
 // Server
 type server struct {
-	listener Listener
+	listener listener
+
 	handler handler
 	clientChan <-chan *Client
 	msgChan <-chan string
@@ -40,7 +41,7 @@ func NewServer(handler handler) server {
 	var writeMsgChan chan<- string = msgChan
 
 	return server{
-		listener: NewListener(writeClientChan, writeMsgChan),
+		listener: newListener(writeClientChan, writeMsgChan),
 		handler: handler,
 		clientChan: readClientChan,
 		msgChan: readMsgChan,
@@ -50,17 +51,17 @@ func NewServer(handler handler) server {
 }
 
 // Methods
-func (s *server) Start(port int) {
-	go s.listener.Start(port)
+func (s *server) Start(tcpPort, wsPort int) {
+	go s.listener.start(tcpPort, wsPort)
 
 	for {
 		select {
-		case newClient := <-s.clientChan:
+		case newClient := <- s.clientChan:
 			go s.handler.OnConnect(newClient)
-			go newClient.Receive()
+			go newClient.receive()
 			s.Clients[newClient.ID] = newClient
 
-		case raw := <-s.msgChan:
+		case raw := <- s.msgChan:
 			dir, content := parseMessage(raw)
 
 			if dir == "CLOSE" {
