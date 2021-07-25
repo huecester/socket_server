@@ -8,6 +8,11 @@ import (
 	"log"
 )
 
+const (
+	// fin, rsv, mask, payload len, mask key
+	minFrameLen = 6;
+)
+
 // Client
 type Client struct {
 	conn *net.Conn
@@ -48,6 +53,11 @@ func (cl *Client) Receive() {
 
 		hb := make([]byte, n)
 		copy(hb, buf)
+
+		// Close connection if frame is invalid (below min length)
+		if len(hb) < minFrameLen {
+			return
+		}
 
 		f := newFrame(hb)
 
